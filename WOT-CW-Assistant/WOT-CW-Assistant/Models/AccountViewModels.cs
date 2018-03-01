@@ -65,6 +65,9 @@ namespace WOT_CW_Assistant.Models
     public class RegisterViewModel
     {
         [Required]
+        [Display(Name = "Player Nick Name")]
+        public string PlayerNickName { get; set; }
+        [Required]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
