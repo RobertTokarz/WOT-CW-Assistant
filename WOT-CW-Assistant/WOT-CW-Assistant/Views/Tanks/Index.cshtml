@@ -1,0 +1,97 @@
+﻿@using Microsoft.AspNet.Identity;
+@*@model IEnumerable<WOT_CW_Assistant.Models.Tank>*@
+
+@if (Request.IsAuthenticated)
+{
+    {
+        ViewBag.Title = "Index";
+        var tier = ViewBag.Tier;
+    }
+
+    <h2>Tanks</h2>
+    <p> Please select tank type of @ViewBag.Tier tier:</p>
+
+    using (Html.BeginForm("tanksByType", "Tanks", FormMethod.Get, new { @class = "form-horizontal", role = "form" }))
+    {
+        <h4>Select tier of Clan Wars/Stronghold Battle.</h4>
+        <hr />
+        <div class="form-group">
+
+            <div class="col-md-10">
+                Heavy Tanks
+                @Html.RadioButton("tankType", "heavyTank")
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                Medium Tanks
+                @Html.RadioButton("tankType", "mediumTank")
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                Light Tanks
+                @Html.RadioButton("tankType", "lightTank")
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                Tank Destroyers
+                @Html.RadioButton("tankType", "AT-SPG")
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                Artillery
+                @Html.RadioButton("tankType", "SPG")
+            </div>
+        </div>
+        <input type="hidden" name="tier" value="@ViewBag.Tier" />
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" class="btn btn-default" value="Select Vehicle Type" />
+            </div>
+        </div>
+    }
+
+    @**<table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.tankImage)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.tankName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.tankTier)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.tankType)
+                </th>
+
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <img src="@String.Format(item.tankImage)" />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.tankName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.tankTier)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.tankType)
+                    </td>
+
+
+                </tr>
+            }
+
+        </table>*@
+}

@@ -1,0 +1,67 @@
+﻿@using Microsoft.AspNet.Identity;
+@model List<WOT_CW_Assistant.Models.Tank>
+
+@{
+    ViewBag.Title = "TanksByType";
+}
+
+@if (Request.IsAuthenticated)
+{
+
+
+    <h2>Tanks</h2>
+    <p> Please select tanks :</p>
+    using (Html.BeginForm("Index", "TankStatistic", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        <table class="table">
+            <tr>
+                <th>
+                    Image
+                </th>
+                <th>
+                   Tank
+                </th>
+                <th>
+                    Tier
+                </th>
+                <th>
+                    Type
+                </th>
+                <th>
+                    Select Tank
+                </th>
+                <th></th>
+            </tr>
+           
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <img src="@String.Format(Model[i].tankImage)" />
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(modelItem => modelItem[i].tankName,  new { @readonly = true })
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(modelItem => modelItem[i].tankTier,  new { @readonly = true })
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(modelItem => modelItem[i].tankType,  new { @readonly = true })
+                    </td>
+                    <td>
+                        @Html.CheckBoxFor(modelItem => modelItem[i].selected, new { @checked = "checked" })
+                    </td>
+                    @Html.HiddenFor(modelItem => modelItem[i].tankNo)
+                </tr>
+            }
+
+        </table>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" class="btn btn-default" value="Display Statistics" />
+            </div>
+        </div>
+    }
+}
+
+
