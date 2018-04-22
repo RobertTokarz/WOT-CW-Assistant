@@ -1,14 +1,15 @@
 ﻿@using Microsoft.AspNet.Identity;
+
 @{
     ViewBag.Title = "Home Page";
 }
 
 @if (Request.IsAuthenticated)
 {
-    @Html.Action("Menu", "Navigation")
-    <div class="content">
+   
+    <div class="col-sm-9">
 
-        <p>Welcome  @User.Identity.GetUserName() </p>
+        <p>Welcome  @User.Identity.GetPlayerNickName() </p>
 
         @using (Html.BeginForm("Index", "Tanks", FormMethod.Get, new { @class = "form-horizontal", role = "form" }))
         {
@@ -42,12 +43,14 @@
             </div>
         }
     </div>
+
 }
 else
 {
     <div class="jumbotron">
         <h1>World of Tanks Clan Wars Assistant</h1>
         <p class="lead">Welcome to World of Tanks Clan Wars Assistant.</p>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/F9oidcuwaxI" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     </div>
 }
 

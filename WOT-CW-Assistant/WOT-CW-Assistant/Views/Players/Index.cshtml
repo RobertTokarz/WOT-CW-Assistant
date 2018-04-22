@@ -1,0 +1,75 @@
+﻿@model List<WOT_CW_Assistant.Models.Player>
+@{
+    ViewBag.Title = "Players";
+}
+
+<h2>Players</h2>
+
+@using Microsoft.AspNet.Identity;
+
+
+@if (Request.IsAuthenticated)
+{
+    {
+        ViewBag.Title = "Clan Members";
+        var tier = ViewBag.Tier;
+    }
+
+    <h2>Clan Members</h2>
+
+    <p>@Html.ActionLink("Update Clan Members Details", "Index", "Players", new { update = true }, null)</p>
+
+
+
+    <table class="table">
+        <tr>
+            <th>
+                NickName
+            </th>
+            <th>
+                Battles
+            </th>
+            <th>
+                Personal Rating
+            </th>
+            <th>
+                Average Experience
+            </th>
+            <th>
+                Hit Percent
+            </th>
+            <th>
+                Role
+            </th>
+        </tr>
+
+        @foreach (var player in Model)
+        {
+            <tr>
+                <td>
+                    @Html.Encode(player.playerNickName)
+                </td>
+                <td>
+                    @Html.Encode(player.battles)
+                </td>
+                <td>
+                    @Html.Encode(player.personalRating)
+                </td>
+                <td>
+                    @Html.Encode(player.avgExperience)
+                </td>
+                <td>
+                    @Html.Encode(player.hitPercent)
+                </td>
+                <td>
+                    @Html.Encode(player.role)
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+
+
+
+

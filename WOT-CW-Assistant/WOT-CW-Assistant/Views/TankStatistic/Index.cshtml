@@ -1,7 +1,66 @@
-﻿
+﻿@using Microsoft.AspNet.Identity;
+@model List<WOT_CW_Assistant.Models.TankStatistics>
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Tanks Statistics";
+}
+@if (Request.IsAuthenticated)
+{
+    <h2>Tanks Statistics</h2>
+
+    <table class="table">
+        <tr>
+            <th>
+                NickName
+            </th>
+            <th>
+                Tank
+            </th>
+            <th>
+                Battles
+            </th>
+            <th>
+                Avg Exp
+            </th>
+            <th>
+                Avg Spot
+            </th>
+            <th>
+                Hit Percent
+            </th>
+            <th>
+                Win Percent
+            </th>
+        </tr>
+
+        @foreach (var tankStatisctics in Model)
+        {
+            <tr>
+                <td>
+                    @Html.Encode(tankStatisctics.playerNickName)
+                </td>
+                <td>
+                    @Html.Encode(tankStatisctics.tank)
+                </td>
+
+                <td>
+                @Html.Encode(tankStatisctics.battlesCount)
+                </td>
+                <td>
+                    @Html.Encode(tankStatisctics.avgExperiencePerBattle)
+                </td>
+                <td>
+                    @Html.Encode(tankStatisctics.avgDamagePerBattle)
+                </td>
+                <td>
+                    @Html.Encode(tankStatisctics.spotPerBattle)
+                </td>
+                <td>
+                    @Html.Encode(tankStatisctics.winningPercent)
+                </td>
+            </tr>
+        }
+
+    </table>
 }
 
-<h2>Index</h2>
 
