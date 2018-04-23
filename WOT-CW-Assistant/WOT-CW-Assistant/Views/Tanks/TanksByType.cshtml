@@ -40,13 +40,13 @@
                         <img src="@String.Format(Model[i].tankImage)" />
                     </td>
                     <td>
-                        @Html.TextBoxFor(modelItem => modelItem[i].tankName,  new { @readonly = true })
+                        @Html.DisplayFor(modelItem => modelItem[i].tankName,  new { @readonly = true })
                     </td>
                     <td>
-                        @Html.TextBoxFor(modelItem => modelItem[i].tankTier,  new { @readonly = true })
+                        @Html.DisplayFor(modelItem => modelItem[i].tankTier,  new { @readonly = true })
                     </td>
                     <td>
-                        @Html.TextBoxFor(modelItem => modelItem[i].tankType,  new { @readonly = true })
+                        @Html.DisplayFor(modelItem => modelItem[i].tankType,  new { @readonly = true })
                     </td>
                     <td>
                         @Html.CheckBoxFor(modelItem => modelItem[i].selected, new { @checked = "checked" })

@@ -10,25 +10,25 @@
     <table class="table">
         <tr>
             <th>
-                NickName
+                @Html.ActionLink("NickName", "OrderBy", "TankStatistic", new { orderBy = "nickName" }, null)
             </th>
             <th>
-                Tank
+                @Html.ActionLink("Tank", "OrderBy", "TankStatistic", new { orderBy = "tank" }, null)
             </th>
             <th>
-                Battles
+                @Html.ActionLink("Battles", "OrderBy", "TankStatistic", new { orderBy = "battlesCount" }, null) 
             </th>
             <th>
-                Avg Exp
+                @Html.ActionLink("Avg Exp", "OrderBy", "TankStatistic", new { orderBy = "avgExp" }, null)
             </th>
             <th>
-                Avg Spot
+                @Html.ActionLink("Avg Dmg", "OrderBy", "TankStatistic", new { orderBy = "avgDmg" }, null)
             </th>
             <th>
-                Hit Percent
+                @Html.ActionLink("Avg Spot", "OrderBy", "TankStatistic", new { orderBy = "avgSpot" }, null)
             </th>
             <th>
-                Win Percent
+                @Html.ActionLink("Win Percent", "OrderBy", "TankStatistic", new { orderBy = "winPercent" }, null)
             </th>
         </tr>
 

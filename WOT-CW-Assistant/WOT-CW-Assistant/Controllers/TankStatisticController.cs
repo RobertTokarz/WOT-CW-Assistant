@@ -12,6 +12,7 @@ namespace WOT_CW_Assistant.Controllers
 {
     public class TankStatisticController : Controller
     {
+        private static List<TankStatistics> tsl;
         private ApplicationDbContext context;
         public TankStatisticController()
         {
@@ -22,32 +23,69 @@ namespace WOT_CW_Assistant.Controllers
             context.Dispose();
         }
         [HttpPost]
-        public ActionResult Index(List<WOT_CW_Assistant.Models.Tank> tanks, string orderBy = "avgExperiencePerBattle")
+        public ActionResult Index(List<WOT_CW_Assistant.Models.Tank> tanks)
         {
-            string plNick = User.Identity.GetPlayerNickName();
-            Player loggedPlayer = context.Players.Where(p => p.playerNickName == plNick ).FirstOrDefault();
-            string clanId = loggedPlayer.clanId;
-            var dbPlayers = context.Players.Where(p => p.clanId == loggedPlayer.clanId).ToList();
-            List<TankStatistics> tsl = new List<TankStatistics>();
-            foreach(Player player in dbPlayers)
+            List<TankStatistics> ordered = new List<TankStatistics>();
+            try
             {
-                foreach(Tank tank in tanks)
+                tsl = new List<TankStatistics>();
+                string plNick = User.Identity.GetPlayerNickName();
+                Player loggedPlayer = context.Players.Where(p => p.playerNickName == plNick).FirstOrDefault();
+                string clanId = loggedPlayer.clanId;
+                var dbPlayers = context.Players.Where(p => p.clanId == loggedPlayer.clanId).ToList();
+
+                foreach (Player player in dbPlayers)
                 {
-                    if (tank.selected)
+                    foreach (Tank tank in tanks)
                     {
-                        TankStatistics ts = context.TankStatistics.Where(t => t.playerNo == player.playerNo && t.tankId == tank.tankNo).FirstOrDefault();
-                        if (ts != null) { tsl.Add(ts); }
+                        if (tank.selected)
+                        {
+                            TankStatistics ts = context.TankStatistics.Where(t => t.playerNo == player.playerNo && t.tankId == tank.tankNo).FirstOrDefault();
+                            if (ts != null) { tsl.Add(ts); }
+                        }
                     }
-
                 }
-
+                ordered = tsl.OrderByDescending(x => x.avgExperiencePerBattle).ToList();
             }
-
-            List<TankStatistics> ordered = tsl.OrderByDescending(x=> x.avgExperiencePerBattle).ToList();
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
             return View(ordered);
         }
+        
+        public ActionResult OrderBy(string orderBy)
+        {
+            List<TankStatistics> ordered = new List<TankStatistics>();
+            switch (orderBy)
+            {
+                case "avgExp":
+                    ordered = tsl.OrderByDescending(x => x.avgExperiencePerBattle).ToList();
+                    break;
+                case "battlesCount":
+                    ordered = tsl.OrderByDescending(x => x.battlesCount).ToList();
+                    break;
+                case "nickName":
+                    ordered = tsl.OrderBy(x => x.playerNickName).ToList();
+                    break;
+                case "tank":
+                    ordered = tsl.OrderByDescending(x => x.tank).ToList();
+                    break;
+                case "avgDmg":
+                    ordered = tsl.OrderByDescending(x => x.avgDamagePerBattle).ToList();
+                    break;
+                case "avgSpot":
+                    ordered = tsl.OrderByDescending(x => x.spotPerBattle).ToList();
+                    break;
+                case "winPercent":
+                    ordered = tsl.OrderByDescending(x => x.winningPercent).ToList();
+                    break;
+           }
 
+            return View("Index", ordered);
+        }
 
+ 
 
     }
 }
