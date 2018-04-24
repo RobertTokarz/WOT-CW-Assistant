@@ -33,5 +33,13 @@ namespace WOT_CW_Assistant.Controllers
             return View(model);
 
         }
+
+        public ActionResult AllTanks()
+        {
+            var model = context.Tanks.ToList();
+
+            return View(model);
+
+        }
     }
 }

@@ -1,0 +1,35 @@
+﻿@model List<WOT_CW_Assistant.Models.Tank>
+@using Microsoft.AspNet.Identity;
+
+@if (Request.IsAuthenticated)
+{
+    @{
+        ViewBag.Title = "AllTanks";
+    }
+
+    <h2>AllTanks</h2>
+
+    <div>
+        <h4>Tank</h4>
+        <hr />
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <dl class="dl-horizontal">
+                <dt>
+                    <img src="@String.Format(Model[i].tankImage)" />
+                </dt>
+                <dd>
+                    <p>Name: @Html.DisplayFor(modelItem => modelItem[i].tankName, new { @readonly = true })</p>
+
+                    <p>Tier: @Html.DisplayFor(modelItem => modelItem[i].tankTier, new { @readonly = true })</p>
+
+                    <p>Type: @Html.DisplayFor(modelItem => modelItem[i].tankType, new { @readonly = true })</p>
+
+                    <p>Nation: @Html.DisplayFor(modelItem => modelItem[i].nation, new { @readonly = true })</p>
+                </dd>
+            </dl>
+        }
+
+    </div>
+
+}

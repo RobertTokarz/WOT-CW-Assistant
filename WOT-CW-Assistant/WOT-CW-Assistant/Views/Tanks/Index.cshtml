@@ -19,6 +19,7 @@
             <div class="col-md-10">
                 Heavy Tanks
                 @Html.RadioButton("tankType", "heavyTank")
+                <img src="~/Images/mediumTank1.jpg" alt="Medium" width="200" height="150" />
             </div>
         </div>
         <div class="form-group">
@@ -32,18 +33,21 @@
             <div class="col-md-10">
                 Light Tanks
                 @Html.RadioButton("tankType", "lightTank")
+                <img src="~/Images/mediumTank1.jpg" alt="Medium" width="200" height="150" />
             </div>
         </div>
         <div class="form-group">
             <div class="col-md-10">
                 Tank Destroyers
                 @Html.RadioButton("tankType", "AT-SPG")
+                <img src="~/Images/mediumTank1.jpg" alt="Medium" width="200" height="150" />
             </div>
         </div>
         <div class="form-group">
             <div class="col-md-10">
                 Artillery
                 @Html.RadioButton("tankType", "SPG")
+                <img src="~/Images/mediumTank1.jpg" alt="Medium" width="200" height="150" />
             </div>
         </div>
         <input type="hidden" name="tier" value="@ViewBag.Tier" />

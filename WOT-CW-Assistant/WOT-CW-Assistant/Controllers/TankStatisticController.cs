@@ -12,7 +12,7 @@ namespace WOT_CW_Assistant.Controllers
 {
     public class TankStatisticController : Controller
     {
-        private static List<TankStatistics> tsl;
+         
         private ApplicationDbContext context;
         public TankStatisticController()
         {
@@ -25,10 +25,11 @@ namespace WOT_CW_Assistant.Controllers
         [HttpPost]
         public ActionResult Index(List<WOT_CW_Assistant.Models.Tank> tanks)
         {
+            
             List<TankStatistics> ordered = new List<TankStatistics>();
             try
             {
-                tsl = new List<TankStatistics>();
+                List<TankStatistics> tsl = new List<TankStatistics>();
                 string plNick = User.Identity.GetPlayerNickName();
                 Player loggedPlayer = context.Players.Where(p => p.playerNickName == plNick).FirstOrDefault();
                 string clanId = loggedPlayer.clanId;
@@ -46,6 +47,7 @@ namespace WOT_CW_Assistant.Controllers
                     }
                 }
                 ordered = tsl.OrderByDescending(x => x.avgExperiencePerBattle).ToList();
+                HttpContext.Session.Add("tanksStatistics", tsl);
             }
             catch(Exception ex)
             {
@@ -56,6 +58,8 @@ namespace WOT_CW_Assistant.Controllers
         
         public ActionResult OrderBy(string orderBy)
         {
+
+            List<TankStatistics> tsl = HttpContext.Session["tanksStatistics"] as List<TankStatistics>;
             List<TankStatistics> ordered = new List<TankStatistics>();
             switch (orderBy)
             {

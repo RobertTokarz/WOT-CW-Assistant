@@ -18,17 +18,30 @@ namespace WOT_CW_Assistant.Controllers
         }
 
         // GET: Players
-        public ActionResult Index(bool update = false)
+        public ActionResult Index(bool updateTanksStats = false, bool updatePlayerStats = false)
         {
             context = new ApplicationDbContext();
             string playerNickName = User.Identity.GetPlayerNickName();
             string clanId = context.Players.Where(p => p.playerNickName == playerNickName).FirstOrDefault().clanId;
             List<Player> members = context.Players.Where(p => p.clanId == clanId).ToList();
-            context.Dispose();
-            if (update)
+            
+            if (updateTanksStats)
             {
                 AddTanksStats(members);
             }
+            if(updatePlayerStats)
+            {
+                List<Player> updatedMembers = GetClanMembers(clanId);
+                foreach(Player member in members)
+                {
+                    Player updated = updatedMembers.Where(p => p.playerNo == member.playerNo).FirstOrDefault();
+                    updated.id = member.id;
+                    context.Entry(member).CurrentValues.SetValues(updated);
+                    context.SaveChanges();
+                }
+                members = updatedMembers;
+            }
+            context.Dispose();
             return View(members);
         }
         [HttpPost]

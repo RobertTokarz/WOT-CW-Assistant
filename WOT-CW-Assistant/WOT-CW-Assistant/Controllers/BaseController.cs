@@ -26,35 +26,9 @@ namespace WOT_CW_Assistant.Controllers
                     string playerDetailsJson = webClient.DownloadString(detailsUrl);
                     JObject playerDetails = JObject.Parse(playerDetailsJson);
                     string clanId = playerDetails["data"][playerId]["clan_id"].ToString();
- 
+
                     var dbPlayers = context.Players.Where(p => p.clanId == clanId).ToList();
-                    string clanMemberRequest = "https://api.worldoftanks.eu/wgn/clans/info/?application_id=9d3d88ea7bec100a6a1c71edc0e12416&clan_id=" + clanId;
-                    string jsonClanMembers = webClient.DownloadString(clanMemberRequest);
-
-                    JObject jsonClanMembersObj = JObject.Parse(jsonClanMembers);
-                    JToken membersData = jsonClanMembersObj.SelectToken("data." + clanId + ".members");
-                    JArray membersDataArray = (JArray)membersData;
-                    List<Player> playerList = new List<Player>();
-                    foreach (var member in membersDataArray)
-                    {
-                        Player player = new Player();
-                        player.playerNo = member.SelectToken("account_id", false).ToString();
-                        player.playerNickName = member.SelectToken("account_name", false).ToString();
-                        player.role = member.SelectToken("role", false).ToString();
-                        player.clanId = clanId;
-                        string playerStatsRequest = "https://api.worldoftanks.eu/wot/account/info/?application_id=9d3d88ea7bec100a6a1c71edc0e12416&account_id=" + player.playerNo;
-                        string jsonPlayerStats = webClient.DownloadString(playerStatsRequest);
-                        JObject jsonPlayerStatsObj = JObject.Parse(jsonPlayerStats);
-
-
-                        player.personalRating = Int32.Parse(jsonPlayerStatsObj.SelectToken("data."+ player.playerNo + ".global_rating", false).ToString());
-                        player.avgExperience = Int32.Parse(jsonPlayerStatsObj.SelectToken("data." + player.playerNo + ".statistics.all.battle_avg_xp", false).ToString());
-                        player.battles = Int32.Parse(jsonPlayerStatsObj.SelectToken("data." + player.playerNo + ".statistics.all.battles", false).ToString());
-                        player.hitPercent = Int32.Parse(jsonPlayerStatsObj.SelectToken("data." + player.playerNo + ".statistics.all.hits_percents", false).ToString());
-                        
-                        playerList.Add(player);
-
-                    }
+                    List<Player> playerList = GetClanMembers(clanId);
                     List<Player> playersNotInClan = dbPlayers.Where(e1 => !playerList.Any(e2 => e2.playerNickName == e1.playerNickName)).ToList(); //players to delete - who quit from clan
                     List<Player> playersToAddToClan = playerList.Where(e1 => !dbPlayers.Any(e2 => e2.playerNickName == e1.playerNickName)).ToList(); //players to add - new players in clan
                     context.Players.RemoveRange(playersNotInClan);
@@ -71,7 +45,7 @@ namespace WOT_CW_Assistant.Controllers
 
         }
 
-        protected virtual void AddTanksStats(List<Player> clanPlayers)
+        protected virtual void AddTanksStats(List<Player> clanPlayers) //add update tanks stats
         {
             try
             {
@@ -101,11 +75,11 @@ namespace WOT_CW_Assistant.Controllers
                                 if (playerStatsJArray != null)
                                 {
 
-                                    foreach (JObject tankStatsObj in playerStatsJArray) 
+                                    foreach (JObject tankStatsObj in playerStatsJArray)
                                     {
                                         TankStatistics tankStatisctic = new TankStatistics();
                                         tankStatisctic.tankId = tankStatsObj["tank_id"].ToString();
-                                        tankStatisctic.tank = tList.Where(t => t.tankNo == tankStatisctic.tankId).Select(t=>t.tankName).FirstOrDefault();
+                                        tankStatisctic.tank = tList.Where(t => t.tankNo == tankStatisctic.tankId).Select(t => t.tankName).FirstOrDefault();
                                         tankStatisctic.playerNo = newPlayer.playerNo;
                                         tankStatisctic.lastUpdate = DateTime.Now;
                                         tankStatisctic.damageDealt = (int)tankStatsObj["all"]["damage_dealt"];
@@ -130,8 +104,8 @@ namespace WOT_CW_Assistant.Controllers
                                         tankStatisctic.winningPercent = Convert.ToInt32(winningPercent);
                                         TankStatistics dbTankPlayerStats = context.TankStatistics.Where(p => p.playerNo == newPlayer.playerNo && p.tankId == tankStatisctic.tankId).FirstOrDefault(); //check if player stats are in table - for exaple player was already in different clan
                                         if (dbTankPlayerStats == null)   //new player or tank without stats in db - if player has stats update below
-                                        {                                            
-                                            
+                                        {
+
                                             context.TankStatistics.Add(tankStatisctic);
                                             context.SaveChanges();
                                         }
@@ -140,7 +114,7 @@ namespace WOT_CW_Assistant.Controllers
                                             tankStatisctic.id = dbTankPlayerStats.id;
                                             context.Entry(dbTankPlayerStats).CurrentValues.SetValues(tankStatisctic);
                                             context.SaveChanges();
-                                         }
+                                        }
                                     }
                                 }
                                 queriedTanks += 100;
@@ -163,6 +137,37 @@ namespace WOT_CW_Assistant.Controllers
                 Console.WriteLine(ex.ToString());
             }
 
+        }
+
+        protected virtual List<Player> GetClanMembers(string clanId)
+        {
+            List<Player> playerList = new List<Player>();
+            using (var webClient = new System.Net.WebClient())
+            {
+                string clanMemberRequest = "https://api.worldoftanks.eu/wgn/clans/info/?application_id=9d3d88ea7bec100a6a1c71edc0e12416&clan_id=" + clanId;
+                string jsonClanMembers = webClient.DownloadString(clanMemberRequest);
+                JObject jsonClanMembersObj = JObject.Parse(jsonClanMembers);
+                JToken membersData = jsonClanMembersObj.SelectToken("data." + clanId + ".members");
+                JArray membersDataArray = (JArray)membersData;
+                foreach (var member in membersDataArray)
+                {
+                    Player player = new Player();
+                    player.playerNo = member.SelectToken("account_id", false).ToString();
+                    player.playerNickName = member.SelectToken("account_name", false).ToString();
+                    player.role = member.SelectToken("role", false).ToString();
+                    player.clanId = clanId;
+                    string playerStatsRequest = "https://api.worldoftanks.eu/wot/account/info/?application_id=9d3d88ea7bec100a6a1c71edc0e12416&account_id=" + player.playerNo;
+                    string jsonPlayerStats = webClient.DownloadString(playerStatsRequest);
+                    JObject jsonPlayerStatsObj = JObject.Parse(jsonPlayerStats);
+                    player.personalRating = Int32.Parse(jsonPlayerStatsObj.SelectToken("data." + player.playerNo + ".global_rating", false).ToString());
+                    player.avgExperience = Int32.Parse(jsonPlayerStatsObj.SelectToken("data." + player.playerNo + ".statistics.all.battle_avg_xp", false).ToString());
+                    player.battles = Int32.Parse(jsonPlayerStatsObj.SelectToken("data." + player.playerNo + ".statistics.all.battles", false).ToString());
+                    player.hitPercent = Int32.Parse(jsonPlayerStatsObj.SelectToken("data." + player.playerNo + ".statistics.all.hits_percents", false).ToString());
+
+                    playerList.Add(player);
+                }
+            }
+            return playerList;
         }
     }
 }

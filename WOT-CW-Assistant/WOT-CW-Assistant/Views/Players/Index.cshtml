@@ -1,10 +1,4 @@
 ﻿@model List<WOT_CW_Assistant.Models.Player>
-@{
-    ViewBag.Title = "Players";
-}
-
-<h2>Players</h2>
-
 @using Microsoft.AspNet.Identity;
 
 
@@ -17,9 +11,8 @@
 
     <h2>Clan Members</h2>
 
-    <p>@Html.ActionLink("Update Clan Members Details", "Index", "Players", new { update = true }, null)</p>
-
-
+    <p>@Html.ActionLink("Update Clan Members Tanks Statistics", "Index", "Players", new { updateTanksStats = true }, null)</p>
+    <p>@Html.ActionLink("Update Clan Members Overall Statistics", "Index", "Players", new { updatePlayerStats = true }, null)</p>
 
     <table class="table">
         <tr>
