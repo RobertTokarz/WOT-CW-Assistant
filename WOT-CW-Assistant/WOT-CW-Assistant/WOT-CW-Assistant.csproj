@@ -290,7 +290,12 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\arty.jpg" />
+    <Content Include="Images\e100.jpg" />
+    <Content Include="Images\light.jpg" />
     <Content Include="Images\mediumTank1.jpg" />
+    <Content Include="Images\t62.jpg" />
+    <Content Include="Images\td.jpg" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
